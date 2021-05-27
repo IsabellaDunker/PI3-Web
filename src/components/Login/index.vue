@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { cpf } from 'cpf-cnpj-validator';
+
 export default {
   data() {
     return {
@@ -47,7 +49,9 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.cpf, this.password);
+      const ncpf = cpf.strip(this.cpf);
+      const { password } = this;
+      this.$store.dispatch('login', { cpf: ncpf, password });
     },
   },
 };
