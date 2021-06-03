@@ -41,6 +41,11 @@ export default new Vuex.Store({
       const users = await userService.get();
       commit('SET_USERS_USERS', users.data);
     },
+    async users_deleteUser({ commit }, user) {
+      await userService.remove(user);
+      const users = await userService.get();
+      commit('SET_USERS_USERS', users.data);
+    },
   },
   modules: {
   },
