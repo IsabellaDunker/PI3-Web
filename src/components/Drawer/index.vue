@@ -50,6 +50,10 @@ export default {
           title: 'Home',
           route: '/',
         },
+        {
+          title: 'Usuários',
+          route: '/users',
+        },
       ],
     };
   },

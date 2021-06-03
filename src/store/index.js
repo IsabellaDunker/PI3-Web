@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import authService from '../services/auth';
+import userService from '../services/user';
 
 Vue.use(Vuex);
 
@@ -9,6 +10,9 @@ export default new Vuex.Store({
     user: null,
     auth: null,
     drawer: true,
+    users: {
+      users: null,
+    },
   },
   mutations: {
     SET_USER(state, user) {
@@ -20,6 +24,9 @@ export default new Vuex.Store({
     SET_DRAWER(state, drawer) {
       state.drawer = drawer;
     },
+    SET_USERS_USERS(state, users) {
+      state.users.users = users;
+    },
   },
   actions: {
     async login({ commit }, { cpf, password }) {
@@ -29,6 +36,10 @@ export default new Vuex.Store({
     },
     setDrawer({ commit }, value) {
       commit('SET_DRAWER', value);
+    },
+    async users_fetchUsers({ commit }) {
+      const users = await userService.get();
+      commit('SET_USERS_USERS', users.data);
     },
   },
   modules: {
