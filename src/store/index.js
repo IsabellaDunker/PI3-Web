@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     user: null,
     auth: null,
-    drawer: false,
+    drawer: true,
   },
   mutations: {
     SET_USER(state, user) {
