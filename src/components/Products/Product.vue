@@ -30,15 +30,39 @@
               <v-row>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                      v-model="product.name"
-                      label="Nome"
-                    ></v-text-field>
+                    v-model="product.name"
+                    label="Nome"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                      v-model="product.is_available"
-                      label="Ativo"
-                    ></v-text-field>
+                    v-model="product.image_url"
+                    label="Imagem"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="product.environment"
+                    label="Ambiente"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="product.price"
+                    label="Preço"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="product.description"
+                    label="Descrição"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="product.number"
+                    label="Quantidade"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -108,6 +132,10 @@ export default {
       deleteDialog: false,
       addDialog: false,
       search: '',
+      available: [
+        'Sim',
+        'Não',
+      ],
       headers: [
         { text: 'Nome', value: 'name' },
         {
@@ -131,14 +159,11 @@ export default {
     products() {
       const products = this.$store.state.products.products?.map((product) => {
         const isAvailable = product.is_available ? 'Sim' : 'Não';
-        const hasStock = product.has_stock ? 'Sim' : 'Não';
         return {
           product: product.id,
           name: product.name,
           is_available: isAvailable,
-          has_stock: hasStock,
           number: product.number,
-          unit_type: product.unit_type,
           price: product.price,
           image_url: product.image_url,
           description: product.description,
@@ -152,12 +177,9 @@ export default {
     clearProduct() {
       console.log(this.product);
       this.product = {
-        product: '',
         name: '',
         is_available: '',
-        has_stock: '',
         number: '',
-        unit_type: '',
         price: '',
         image_url: '',
         description: '',
