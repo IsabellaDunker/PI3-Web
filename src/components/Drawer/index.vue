@@ -58,6 +58,10 @@ export default {
           title: 'Ambientes',
           route: '/environments',
         },
+        {
+          title: 'Produtos',
+          route: '/products',
+        },
       ],
     };
   },
