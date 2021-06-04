@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import authService from '../services/auth';
 import userService from '../services/user';
+import environmentService from '../services/environment';
 
 Vue.use(Vuex);
 
@@ -12,6 +13,9 @@ export default new Vuex.Store({
     drawer: true,
     users: {
       users: null,
+    },
+    environments: {
+      environments: null,
     },
   },
   mutations: {
@@ -27,6 +31,9 @@ export default new Vuex.Store({
     SET_USERS_USERS(state, users) {
       state.users.users = users;
     },
+    SET_ENVIRONMENTS_ENVIRONMENTS(state, environments) {
+      state.environments.environments = environments;
+    },
   },
   actions: {
     async login({ commit }, { cpf, password }) {
@@ -40,6 +47,10 @@ export default new Vuex.Store({
     async users_fetchUsers({ commit }) {
       const users = await userService.get();
       commit('SET_USERS_USERS', users.data);
+    },
+    async environments_fetchEnvironments({ commit }) {
+      const environments = await environmentService.get();
+      commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
     },
     async users_deleteUser({ commit }, user) {
       await userService.remove(user);

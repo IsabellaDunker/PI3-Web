@@ -17,7 +17,7 @@ export default {
     Drawer,
   },
   async created() {
-    await this.$store.dispatch('users_fetchUsers');
+    await this.$store.dispatch('environments_fetchEnvironments');
   },
 };
 </script>
