@@ -62,7 +62,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="deleteDialog" max-width="395px">
+      <v-dialog v-model="deleteDialog" max-width="410px">
         <v-card>
           <v-card-title class="text-h5">Confirmar exclusão do ambiente?</v-card-title>
           <v-card-actions>
@@ -116,6 +116,9 @@ export default {
           filterable: false,
           sortable: false,
         },
+        {
+          text: 'Ações', value: 'actions', sortable: false, filterable: false,
+        },
       ],
     };
   },
@@ -127,6 +130,7 @@ export default {
       const environments = this.$store.state.environments.environments?.map((environment) => {
         const isActive = environment.is_active ? 'Sim' : 'Não';
         return {
+          environment: environment.id,
           name: environment.name,
           is_active: isActive,
         };

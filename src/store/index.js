@@ -57,6 +57,11 @@ export default new Vuex.Store({
       const users = await userService.get();
       commit('SET_USERS_USERS', users.data);
     },
+    async environments_deleteEnvironment({ commit }, environment) {
+      await environmentService.remove(environment);
+      const environments = await environmentService.get();
+      commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
+    },
   },
   modules: {
   },
