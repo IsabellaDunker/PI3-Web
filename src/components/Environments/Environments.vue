@@ -140,7 +140,6 @@ export default {
   },
   methods: {
     clearEnvironment() {
-      console.log(this.environment);
       this.environment = {
         name: '',
         is_active: '',

@@ -132,10 +132,6 @@ export default {
       deleteDialog: false,
       addDialog: false,
       search: '',
-      available: [
-        'Sim',
-        'Não',
-      ],
       headers: [
         { text: 'Nome', value: 'name' },
         {

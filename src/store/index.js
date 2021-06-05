@@ -68,6 +68,11 @@ export default new Vuex.Store({
       const users = await userService.get();
       commit('SET_USERS_USERS', users.data);
     },
+    async products_deleteProduct({ commit }, product) {
+      await productService.remove(product);
+      const products = await productService.get();
+      commit('SET_PRODUCTS_PRODUCTS', products.data);
+    },
     async environments_deleteEnvironment({ commit }, environment) {
       await environmentService.remove(environment);
       const environments = await environmentService.get();
