@@ -21,7 +21,7 @@
         <v-card>
           <v-card-title>
             <span class="text-h5">
-              {{ product.product ? `Editar produto` : `Adicionar produto` }}
+              {{ product.id ? `Editar produto` : `Adicionar produto` }}
             </span>
           </v-card-title>
 
@@ -41,10 +41,11 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field
+                  <v-select
                     v-model="product.environment"
+                    :items='environments'
                     label="Ambiente"
-                  ></v-text-field>
+                  ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
@@ -64,6 +65,20 @@
                     label="Quantidade"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    v-model="product.unit_type"
+                    :items='types'
+                    label="Tipo unitário"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    v-model="product.is_available"
+                    :items='available'
+                    label="Disponibilidade"
+                  ></v-select>
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -80,7 +95,7 @@
             <v-btn color="white darken-1" text @click="clearProduct">
               Limpar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="save">
+            <v-btn color="blue darken-1" text @click="saveProduct()">
               Salvar
             </v-btn>
           </v-card-actions>
@@ -132,6 +147,20 @@ export default {
       deleteDialog: false,
       addDialog: false,
       search: '',
+      environments: [
+        'Cozinha',
+        'Bar',
+      ],
+      types: [
+        'l',
+        'ml',
+        'g',
+        'kg',
+      ],
+      available: [
+        'Sim',
+        'Não',
+      ],
       headers: [
         { text: 'Nome', value: 'name' },
         {
@@ -155,15 +184,18 @@ export default {
     products() {
       const products = this.$store.state.products.products?.map((product) => {
         const isAvailable = product.is_available ? 'Sim' : 'Não';
+        const environment = product.environment_id === 2 ? 'Bar' : 'Cozinha';
         return {
-          product: product.id,
+          id: product.id,
           name: product.name,
           is_available: isAvailable,
+          has_stock: product.has_stock,
           number: product.number,
+          unit_type: product.unit_type,
           price: product.price,
           image_url: product.image_url,
           description: product.description,
-          environment: product.environment_id,
+          environment,
         };
       });
       return products;
@@ -171,7 +203,6 @@ export default {
   },
   methods: {
     clearProduct() {
-      console.log(this.product);
       this.product = {
         name: '',
         is_available: '',
@@ -179,14 +210,36 @@ export default {
         price: '',
         image_url: '',
         description: '',
+        unit_type: '',
       };
     },
     editItem(product) {
       this.product = product;
       this.addDialog = true;
     },
+    async saveProduct() {
+      const environmentId = this.product.environment === 'Bar' ? 2 : 3;
+      const available = this.product.is_available === 'Sim';
+      this.product = {
+        id: this.product.id,
+        name: this.product.name,
+        is_available: available,
+        has_stock: true,
+        number: this.product.number,
+        unit_type: this.product.unit_type,
+        price: Number(this.product.price),
+        environment_id: environmentId,
+      };
+      if (this.product.id) {
+        await this.$store.dispatch('products_updateProduct', this.product);
+      } else {
+        await this.$store.dispatch('products_createProduct', this.product);
+      }
+
+      this.addDialog = false;
+    },
     deleteItem(product) {
-      this.productToDelete = product.product;
+      this.productToDelete = product.id;
       this.deleteDialog = true;
     },
     async deleteItemConfirm() {
