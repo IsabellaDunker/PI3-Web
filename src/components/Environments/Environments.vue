@@ -21,7 +21,7 @@
         <v-card>
           <v-card-title>
             <span class="text-h5">
-              {{ environment.environment ? `Editar ambiente` : `Adicionar ambiente` }}
+              {{ environment.id ? `Editar ambiente` : `Adicionar ambiente` }}
             </span>
           </v-card-title>
 
@@ -56,7 +56,7 @@
             <v-btn color="white darken-1" text @click="clearEnvironment">
               Limpar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="save">
+            <v-btn color="blue darken-1" text @click="saveEnvironment()">
               Salvar
             </v-btn>
           </v-card-actions>
@@ -130,7 +130,7 @@ export default {
       const environments = this.$store.state.environments.environments?.map((environment) => {
         const isActive = environment.is_active ? 'Sim' : 'Não';
         return {
-          environment: environment.id,
+          id: environment.id,
           name: environment.name,
           is_active: isActive,
         };
@@ -149,8 +149,23 @@ export default {
       this.environment = environment;
       this.addDialog = true;
     },
+    async saveEnvironment() {
+      const active = this.environment.is_active === 'Sim';
+      this.environment = {
+        id: this.environment.id,
+        name: this.environment.name,
+        is_active: active,
+      };
+      if (this.environment.id) {
+        await this.$store.dispatch('environments_updateEnvironment', this.environment);
+      } else {
+        await this.$store.dispatch('environments_createEnvironment', this.environment);
+      }
+
+      this.addDialog = false;
+    },
     deleteItem(environment) {
-      this.environmentToDelete = environment.environment;
+      this.environmentToDelete = environment.id;
       this.deleteDialog = true;
     },
     async deleteItemConfirm() {

@@ -86,11 +86,21 @@ export default new Vuex.Store({
       const products = await productService.get();
       commit('SET_PRODUCTS_PRODUCTS', products.data);
     },
+    async environments_updateEnvironment({ commit }, environment) {
+      await environmentService.update(environment);
+      const environments = await environmentService.get();
+      commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
+    },
     // CREATE
     async products_createProduct({ commit }, product) {
       await productService.create(product);
       const products = await productService.get();
       commit('SET_PRODUCTS_PRODUCTS', products.data);
+    },
+    async environments_createEnvironment({ commit }, environment) {
+      await environmentService.create(environment);
+      const environments = await environmentService.get();
+      commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
     },
   },
   modules: {
