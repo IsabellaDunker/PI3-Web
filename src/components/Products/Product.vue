@@ -12,7 +12,7 @@
         hide-details
       ></v-text-field>
 
-      <v-dialog v-model="addDialog" max-width="500px">
+      <v-dialog persistent v-model="addDialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
             Adicionar produto
@@ -95,7 +95,7 @@
             <v-btn color="white darken-1" text @click="clearProduct">
               Limpar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="saveProduct()">
+            <v-btn color="blue darken-1" text @click="saveProduct(); clearProduct()">
               Salvar
             </v-btn>
           </v-card-actions>
@@ -220,16 +220,11 @@ export default {
     async saveProduct() {
       const environmentId = this.product.environment === 'Bar' ? 2 : 3;
       const available = this.product.is_available === 'Sim';
-      this.product = {
-        id: this.product.id,
-        name: this.product.name,
-        is_available: available,
-        has_stock: true,
-        number: this.product.number,
-        unit_type: this.product.unit_type,
-        price: Number(this.product.price),
-        environment_id: environmentId,
-      };
+      this.product.is_available = available;
+      this.product.has_stock = true;
+      this.product.price = Number(this.product.price);
+      this.product.environment_id = environmentId;
+
       if (this.product.id) {
         await this.$store.dispatch('products_updateProduct', this.product);
       } else {

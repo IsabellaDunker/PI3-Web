@@ -12,7 +12,7 @@
         hide-details
       ></v-text-field>
 
-      <v-dialog v-model="addDialog" max-width="500px">
+      <v-dialog persistent v-model="addDialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
             Adicionar ambiente
@@ -35,10 +35,11 @@
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                      v-model="environment.is_active"
-                      label="Ativo"
-                    ></v-text-field>
+                  <v-select
+                    v-model="environment.is_active"
+                    :items='active'
+                    label="Disponibilidade"
+                  ></v-select>
                 </v-col>
               </v-row>
             </v-container>
@@ -56,7 +57,7 @@
             <v-btn color="white darken-1" text @click="clearEnvironment">
               Limpar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="saveEnvironment()">
+            <v-btn color="blue darken-1" text @click="saveEnvironment(); clearEnvironment()">
               Salvar
             </v-btn>
           </v-card-actions>
@@ -108,6 +109,10 @@ export default {
       deleteDialog: false,
       addDialog: false,
       search: '',
+      active: [
+        'Sim',
+        'Não',
+      ],
       headers: [
         { text: 'Nome', value: 'name' },
         {
@@ -151,11 +156,8 @@ export default {
     },
     async saveEnvironment() {
       const active = this.environment.is_active === 'Sim';
-      this.environment = {
-        id: this.environment.id,
-        name: this.environment.name,
-        is_active: active,
-      };
+      this.environment.is_active = active;
+
       if (this.environment.id) {
         await this.$store.dispatch('environments_updateEnvironment', this.environment);
       } else {
