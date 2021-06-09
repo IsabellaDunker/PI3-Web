@@ -123,6 +123,14 @@
           mdi-delete
         </v-icon>
       </template>
+      <template v-slot:item.cart="{ item }">
+        <v-icon
+          medium
+          @click="editProducts(item)"
+        >
+          shopping_cart
+        </v-icon>
+      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -147,6 +155,17 @@ export default {
           text: 'Ações', value: 'actions', sortable: false, filterable: false,
         },
       ],
+      headersP: [
+        { text: 'Nome', value: 'name' },
+        {
+          text: 'Disponível',
+          value: 'is_available',
+          filterable: false,
+          sortable: false,
+        },
+        { text: 'Ambiente', value: 'environment' },
+        { text: 'Preço', value: 'price' },
+      ],
     };
   },
   created() {
@@ -161,6 +180,10 @@ export default {
           waiter_id: order.waiter_id,
           tab: order.tab.id,
           createdAt,
+          name: order.products[0].name,
+          is_available: order.products[0].is_available,
+          price: order.products[0].price,
+          environment: order.products[0].environment.name,
         };
       });
       return orders;
@@ -173,6 +196,10 @@ export default {
         tab_id: '',
         created_at: '',
       };
+    },
+    editProducts(order) {
+      this.order = order;
+      this.goToProducts = true;
     },
     editItem(order) {
       this.order = order;
