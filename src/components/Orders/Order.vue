@@ -197,13 +197,17 @@ export default {
         created_at: '',
       };
     },
-    editProducts(order) {
-      this.order = order;
-      this.goToProducts = true;
-    },
     editItem(order) {
       this.order = order;
       this.addDialog = true;
+    },
+    deleteItem(order) {
+      this.orderToDelete = order.order;
+      this.deleteDialog = true;
+    },
+    async deleteItemConfirm() {
+      await this.$store.dispatch('orders_deleteOrder', this.orderToDelete);
+      this.deleteDialog = false;
     },
   },
 };

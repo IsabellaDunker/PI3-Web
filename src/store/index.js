@@ -91,6 +91,11 @@ export default new Vuex.Store({
       const environments = await environmentService.get();
       commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
     },
+    async orders_deleteOrder({ commit }, order) {
+      await orderService.remove(order);
+      const orders = await orderService.get();
+      commit('SET_ORDERS_ORDERS', orders.data);
+    },
     // UPDATE
     async products_updateProduct({ commit }, product) {
       await productService.update(product);
