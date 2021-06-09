@@ -62,6 +62,10 @@ export default {
           title: 'Produtos',
           route: '/products',
         },
+        {
+          title: 'Pedidos',
+          route: '/orders',
+        },
       ],
     };
   },

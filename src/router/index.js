@@ -5,6 +5,7 @@ import Home from '../views/Home.vue';
 import UsersList from '../views/Users/List.vue';
 import EnvironmentsList from '../views/Environments/Environment.vue';
 import ProductsList from '../views/Products/Product.vue';
+import OrdersList from '../views/Orders/Order.vue';
 import authService from '../services/auth';
 import api from '../services/api';
 
@@ -47,6 +48,14 @@ const routes = [
     path: '/products',
     name: 'ProductsList',
     component: ProductsList,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/orders',
+    name: 'OrdersList',
+    component: OrdersList,
     meta: {
       requiresAuth: true,
     },

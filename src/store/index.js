@@ -4,6 +4,7 @@ import authService from '../services/auth';
 import userService from '../services/user';
 import environmentService from '../services/environment';
 import productService from '../services/product';
+import orderService from '../services/order';
 
 Vue.use(Vuex);
 
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     },
     products: {
       products: null,
+    },
+    orders: {
+      orders: null,
     },
   },
   mutations: {
@@ -40,6 +44,9 @@ export default new Vuex.Store({
     },
     SET_PRODUCTS_PRODUCTS(state, products) {
       state.products.products = products;
+    },
+    SET_ORDERS_ORDERS(state, orders) {
+      state.orders.orders = orders;
     },
   },
   actions: {
@@ -63,6 +70,10 @@ export default new Vuex.Store({
     async products_fetchProduct({ commit }) {
       const products = await productService.get();
       commit('SET_PRODUCTS_PRODUCTS', products.data);
+    },
+    async orders_fetchOrder({ commit }) {
+      const orders = await orderService.get();
+      commit('SET_ORDERS_ORDERS', orders.data);
     },
     // DELETE
     async users_deleteUser({ commit }, user) {
@@ -101,6 +112,11 @@ export default new Vuex.Store({
       await environmentService.create(environment);
       const environments = await environmentService.get();
       commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
+    },
+    async orders_createOrder({ commit }, order) {
+      await orderService.create(order);
+      const orders = await orderService.get();
+      commit('SET_ORDERS_ORDERS', orders.data);
     },
   },
   modules: {
