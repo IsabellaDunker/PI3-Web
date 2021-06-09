@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import Login from '../views/Login.vue';
 import Home from '../views/Home.vue';
 import UsersList from '../views/Users/List.vue';
+import EnvironmentsList from '../views/Environments/Environment.vue';
+import ProductsList from '../views/Products/Product.vue';
 import authService from '../services/auth';
 import api from '../services/api';
 
@@ -29,6 +31,22 @@ const routes = [
     path: '/users',
     name: 'UsersList',
     component: UsersList,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/environments',
+    name: 'EnvironmentsList',
+    component: EnvironmentsList,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/products',
+    name: 'ProductsList',
+    component: ProductsList,
     meta: {
       requiresAuth: true,
     },

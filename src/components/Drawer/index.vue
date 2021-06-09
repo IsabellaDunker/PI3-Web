@@ -54,6 +54,14 @@ export default {
           title: 'Usuários',
           route: '/users',
         },
+        {
+          title: 'Ambientes',
+          route: '/environments',
+        },
+        {
+          title: 'Produtos',
+          route: '/products',
+        },
       ],
     };
   },
