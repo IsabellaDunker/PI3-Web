@@ -63,7 +63,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    v-model="order.tab_id"
+                    v-model="order.tab"
                     label="Comanda"
                   ></v-text-field>
                 </v-col>
@@ -83,7 +83,7 @@
             <v-btn color="white darken-1" text @click="clearOrder">
               Limpar
             </v-btn>
-            <v-btn color="blue darken-1" text @click="saveOrder()">
+            <v-btn color="blue darken-1" text @click="saveOrder(); clearOrder()">
               Salvar
             </v-btn>
           </v-card-actions>
@@ -193,13 +193,34 @@ export default {
     clearOrder() {
       this.order = {
         waiter_id: '',
-        tab_id: '',
-        created_at: '',
+        tab: '',
       };
+    },
+    editProducts(order) {
+      this.order = order;
+      this.goToProducts = true;
     },
     editItem(order) {
       this.order = order;
       this.addDialog = true;
+    },
+    async saveOrder() {
+      const date = Date.UTC();
+      this.order.updated_at = date;
+      this.order.tab_id = Number(this.order.tab);
+      this.order.waiter_id = Number(this.order.waiter_id);
+
+      if (this.order.id) {
+        console.log(this.order);
+        await this.$store.dispatch('orders_updateOrder', this.order);
+      } else {
+        this.order.created_at = date;
+        console.log(this.order);
+
+        await this.$store.dispatch('orders_createOrder', this.order);
+      }
+
+      this.addDialog = false;
     },
     deleteItem(order) {
       this.orderToDelete = order.order;
