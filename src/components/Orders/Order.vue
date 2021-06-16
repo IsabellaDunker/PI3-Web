@@ -39,7 +39,70 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog persistent v-model="addDialog" max-width="500px">
+      <v-dialog v-model="addTabDialog" max-width="500px">
+        <v-card>
+          <v-card-title> Criar comanda </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="selectedUser"
+                  item-text="name"
+                  item-value="id"
+                  :items="users"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="addTabDialog = false;"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="createTab()">
+              Criar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="addProdDialog" max-width="500px">
+        <v-card>
+          <v-card-title> Adicionar produto ao carrinho </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="selectedProduct"
+                  item-text="name"
+                  item-value="id"
+                  return-object
+                  :items="products"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="addProdDialog = false;"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="addProduct()">
+              Adicionar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="addDialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="button" dark class="mb-2" v-bind="attrs" v-on="on">
             Fazer pedido
@@ -48,24 +111,77 @@
         <v-card>
           <v-card-title>
             <span class="text-h5">
-              {{ order.id ? `Editar pedido` : `Adicionar pedido` }}
+              {{ `Fazer pedido` }}
             </span>
           </v-card-title>
 
           <v-card-text>
             <v-container>
               <v-row>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                      v-model="order.waiter_id"
-                      label="Garçom"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="order.tab"
+                <v-col cols="11">
+                  <v-autocomplete
+                    v-model="selectedTab"
+                    item-text="user.name"
+                    item-value="id"
+                    :items="tabs"
                     label="Comanda"
-                  ></v-text-field>
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="1" class="pt-7">
+                  <v-btn
+                    color="white"
+                    icon
+                    @click="addTabDialog = true;"
+                  >
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <span class="text-h6 mb-3">Produtos</span>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-data-table
+                    :headers="headersCart"
+                    :items="cart"
+                    hide-default-footer
+                    no-data-text="Nenhum produto foi adicionado"
+                  >
+                    <template v-slot:item.units="{ item }">
+                      <v-icon
+                        small
+                        color="red"
+                        @click="() => {
+                          if(item.units > 1) {
+                            item.units--;
+                          }
+                        }"
+                      >
+                        mdi-minus
+                      </v-icon>
+                      <span class="mx-1">{{item.units}}</span>
+                      <v-icon
+                        small
+                        color="green"
+                        @click="() => item.units++"
+                      >
+                        mdi-plus
+                      </v-icon>
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="d-flex justify-center">
+                  <v-btn
+                    rounded
+                    @click="addProdDialog = true"
+                  >
+                    <v-icon>
+                      mdi-plus
+                    </v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -80,15 +196,18 @@
             >
               Cancelar
             </v-btn>
-            <v-btn color="white darken-1" text @click="clearOrder">
-              Limpar
-            </v-btn>
-            <v-btn color="blue darken-1" text @click="saveOrder(); clearOrder()">
+            <v-btn
+              color="white"
+              text
+              @click="makeOrder();"
+              :disabled="cart.length === 0"
+            >
               Salvar
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+
       <v-dialog v-model="deleteDialog" max-width="410px">
         <v-card>
           <v-card-title class="text-h5">Confirmar exclusão do pedido?</v-card-title>
@@ -133,10 +252,21 @@ export default {
   data() {
     return {
       order: null,
+      selectedUser: null,
+      selectedProduct: null,
       deleteDialog: false,
       addDialog: false,
+      addTabDialog: false,
+      addProdDialog: false,
+      selectedTab: null,
       goToProducts: false,
       search: '',
+      cart: [],
+      headersCart: [
+        { text: 'Produto', value: 'name', sortable: false },
+        { text: 'Preço', value: 'price', sortable: false },
+        { text: 'Unidades', value: 'units', sortable: false },
+      ],
       headers: [
         { text: 'Cliente', value: 'user_name' },
         { text: 'Valor total', value: 'total', sortable: true },
@@ -182,13 +312,22 @@ export default {
       });
       return orders;
     },
+    tabs() {
+      return this.$store.state.orders.tabs || [];
+    },
+    products() {
+      return this.$store.state.orders.products || [];
+    },
+    users() {
+      return this.$store.state.users.users || [];
+    },
   },
   methods: {
     clearOrder() {
-      this.order = {
-        waiter_id: '',
-        tab: '',
-      };
+      this.selectedTab = null;
+      this.selectedUser = null;
+      this.selectedProduct = null;
+      this.cart = [];
     },
     editProducts(order) {
       this.order = order;
@@ -198,21 +337,17 @@ export default {
       this.order = order;
       this.addDialog = true;
     },
-    async saveOrder() {
-      const date = Date.UTC();
-      this.order.updated_at = date;
-      this.order.tab_id = Number(this.order.tab);
-      this.order.waiter_id = Number(this.order.waiter_id);
+    async makeOrder() {
+      const payload = {
+        waiter_id: localStorage.getItem('userId'),
+        tab_id: this.selectedTab,
+        products: this.cart.map((product) => ({
+          id: product.id,
+          units: product.units,
+        })),
+      };
 
-      if (this.order.id) {
-        console.log(this.order);
-        await this.$store.dispatch('orders_updateOrder', this.order);
-      } else {
-        this.order.created_at = date;
-        console.log(this.order);
-
-        await this.$store.dispatch('orders_createOrder', this.order);
-      }
+      await this.$store.dispatch('orders_makeOrder', payload);
 
       this.addDialog = false;
     },
@@ -223,6 +358,26 @@ export default {
     async deleteItemConfirm() {
       await this.$store.dispatch('orders_deleteOrder', this.orderToDelete);
       this.deleteDialog = false;
+    },
+    async createTab() {
+      await this.$store.dispatch('orders_createTab', this.selectedUser);
+      await this.$store.dispatch('orders_fetchTabs');
+      this.addTabDialog = false;
+    },
+    addProduct() {
+      let isProductInCart = false;
+
+      this.cart.forEach((product) => {
+        if (product.id === this.selectedProduct.id) {
+          isProductInCart = true;
+        }
+      });
+
+      if (!isProductInCart) {
+        this.cart.push({ ...this.selectedProduct, units: 1 });
+      }
+
+      this.addProdDialog = false;
     },
   },
 };

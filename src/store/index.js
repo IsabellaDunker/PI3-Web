@@ -5,6 +5,7 @@ import userService from '../services/user';
 import environmentService from '../services/environment';
 import productService from '../services/product';
 import orderService from '../services/order';
+import tabService from '../services/tab';
 
 Vue.use(Vuex);
 
@@ -24,6 +25,8 @@ export default new Vuex.Store({
     },
     orders: {
       orders: null,
+      tabs: null,
+      products: null,
     },
   },
   mutations: {
@@ -47,6 +50,12 @@ export default new Vuex.Store({
     },
     SET_ORDERS_ORDERS(state, orders) {
       state.orders.orders = orders;
+    },
+    SET_ORDERS_TABS(state, tabs) {
+      state.orders.tabs = tabs;
+    },
+    SET_ORDERS_PRODUCTS(state, products) {
+      state.orders.products = products;
     },
   },
   actions: {
@@ -123,10 +132,21 @@ export default new Vuex.Store({
       const environments = await environmentService.get();
       commit('SET_ENVIRONMENTS_ENVIRONMENTS', environments.data);
     },
-    async orders_createOrder({ commit }, order) {
+    async orders_makeOrder({ commit }, order) {
       await orderService.create(order);
       const orders = await orderService.get();
       commit('SET_ORDERS_ORDERS', orders.data);
+    },
+    async orders_fetchTabs({ commit }) {
+      const tabs = await tabService.get();
+      commit('SET_ORDERS_TABS', tabs.data);
+    },
+    async orders_createTab(_, userId) {
+      await tabService.create({ user_id: userId });
+    },
+    async orders_fetchProduct({ commit }) {
+      const products = await productService.get();
+      commit('SET_ORDERS_PRODUCTS', products.data);
     },
   },
   modules: {
