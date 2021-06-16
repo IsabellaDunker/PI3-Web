@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      Usuários
+      Pessoas
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -23,7 +23,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              Adicionar usuário
+              Adicionar pessoa
             </v-btn>
           </template>
           <v-card>

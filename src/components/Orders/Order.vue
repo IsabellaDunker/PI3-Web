@@ -12,7 +12,7 @@
         hide-details
       ></v-text-field>
 
-        <v-dialog v-model="goToProducts" max-width="700px">
+      <v-dialog v-model="goToProducts" max-width="700px">
         <v-card>
           <template>
             <v-data-table
@@ -42,7 +42,7 @@
       <v-dialog persistent v-model="addDialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="button" dark class="mb-2" v-bind="attrs" v-on="on">
-            Adicionar pedido
+            Fazer pedido
           </v-btn>
         </template>
         <v-card>
@@ -111,13 +111,6 @@
       <template v-slot:item.actions="{ item }">
         <v-icon
           small
-          class="mr-2"
-          @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          small
           @click="deleteItem(item)"
         >
           mdi-delete
@@ -145,9 +138,9 @@ export default {
       goToProducts: false,
       search: '',
       headers: [
-        { text: 'Comanda', value: 'tab' },
-        { text: 'Garçom', value: 'waiter_id' },
-        { text: 'Feito em', value: 'createdAt', sortable: false },
+        { text: 'Cliente', value: 'user_name' },
+        { text: 'Valor total', value: 'total', sortable: true },
+        { text: 'Feito em', value: 'createdAt', sortable: true },
         {
           text: 'Produtos', value: 'cart', sortable: false, filterable: false,
         },
@@ -157,14 +150,9 @@ export default {
       ],
       headersP: [
         { text: 'Nome', value: 'name' },
-        {
-          text: 'Disponível',
-          value: 'is_available',
-          filterable: false,
-          sortable: false,
-        },
         { text: 'Ambiente', value: 'environment' },
-        { text: 'Preço', value: 'price' },
+        { text: 'Unidades', value: 'units' },
+        { text: 'Valor Total', value: 'price' },
       ],
     };
   },
@@ -174,16 +162,22 @@ export default {
   computed: {
     orders() {
       const orders = this.$store.state.orders.orders?.map((order) => {
-        const createdAt = order.createdAt.replace(/(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1').substr(0, 10);
+        const createdAt = order.createdAt
+        .replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/, '$3/$2/$1 - $4:$5')
+        .substr(0, 18);
+        const totalPrice = order.products
+        .reduce((t, product) => t + product.products_ordereds.price, 0);
         return {
           id: order.id,
-          waiter_id: order.waiter_id,
+          user_name: order.tab.user.name,
+          total: `R$${totalPrice}`,
           tab: order.tab.id,
           createdAt,
           name: order.products[0].name,
           is_available: order.products[0].is_available,
-          price: order.products[0].price,
+          price: `R$${order.products[0].price}`,
           environment: order.products[0].environment.name,
+          units: order.products[0].products_ordereds.units,
         };
       });
       return orders;

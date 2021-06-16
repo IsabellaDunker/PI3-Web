@@ -44,14 +44,14 @@
 export default {
   data() {
     return {
-      title: 'Teste',
+      title: 'Manager',
       pages: [
         {
           title: 'Home',
           route: '/',
         },
         {
-          title: 'Usuários',
+          title: 'Pessoas',
           route: '/users',
         },
         {
