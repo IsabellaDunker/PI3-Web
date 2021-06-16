@@ -26,7 +26,7 @@
             </v-card-text>
           <v-card-actions class="mr-4">
             <v-spacer/>
-            <v-btn color="primary" @click.prevent="login">Entrar</v-btn>
+            <v-btn color="button" @click.prevent="login">Entrar</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>

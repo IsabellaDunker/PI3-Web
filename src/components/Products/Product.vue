@@ -14,7 +14,7 @@
 
       <v-dialog persistent v-model="addDialog" max-width="500px">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+          <v-btn color="button" dark class="mb-2" v-bind="attrs" v-on="on">
             Adicionar produto
           </v-btn>
         </template>
