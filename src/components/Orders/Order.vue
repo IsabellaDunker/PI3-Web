@@ -17,7 +17,7 @@
           <template>
             <v-data-table
               :headers="headersP"
-              :items="orders"
+              :items="order.products"
               :search="search"
               hide-default-footer
               no-data-text="Nenhum produto foi encontrado"
@@ -202,7 +202,7 @@
               @click="makeOrder();"
               :disabled="cart.length === 0"
             >
-              Salvar
+              Pedir
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -240,7 +240,7 @@
           medium
           @click="editProducts(item)"
         >
-          shopping_cart
+          list
         </v-icon>
       </template>
     </v-data-table>
@@ -251,7 +251,7 @@
 export default {
   data() {
     return {
-      order: null,
+      order: { products: [] },
       selectedUser: null,
       selectedProduct: null,
       deleteDialog: false,
@@ -280,9 +280,9 @@ export default {
       ],
       headersP: [
         { text: 'Nome', value: 'name' },
-        { text: 'Ambiente', value: 'environment' },
-        { text: 'Unidades', value: 'units' },
-        { text: 'Valor Total', value: 'price' },
+        { text: 'Ambiente', value: 'environment.name' },
+        { text: 'Unidades', value: 'products_ordereds.units' },
+        { text: 'Valor Total', value: 'products_ordereds.price' },
       ],
     };
   },
@@ -304,6 +304,7 @@ export default {
           tab: order.tab.id,
           createdAt,
           name: order.products[0].name,
+          products: order.products,
           is_available: order.products[0].is_available,
           price: `R$${order.products[0].price}`,
           environment: order.products[0].environment.name,
